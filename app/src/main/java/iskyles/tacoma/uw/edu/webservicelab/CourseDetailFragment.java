@@ -2,6 +2,7 @@ package iskyles.tacoma.uw.edu.webservicelab;
 
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,10 @@ public class CourseDetailFragment extends Fragment {
         mCourseShortDescTextView = (TextView) view.findViewById(R.id.course_short_desc);
         mCourseLongDescTextView = (TextView) view.findViewById(R.id.course_long_desc);
         mCoursePrereqsTextView = (TextView) view.findViewById(R.id.course_prereqs);
+
+        FloatingActionButton floatingActionButton = (FloatingActionButton)
+                getActivity().findViewById(R.id.fab);
+        floatingActionButton.show();
 
         return view;
     }

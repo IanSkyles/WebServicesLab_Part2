@@ -1,8 +1,4 @@
-<string name="course_id_hint">Enter Course Id (Ex: TCSS450)</string>
-<string name="course_short_desc_hint">Enter Course Short Description (Ex: Mobile App Programming)</string>
-<string name="course_long_desc_hint">Enter Course Long Description</string>
-<string name="course_prereqs_hint">Enter prereqs</string>
-<string name="add_course_text">Add Course</string>
+
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -40,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:text="@string/add_course_text"
+        android:id="@+id/add_course_button"
         android:onClick="addCourse"
         />
 
