@@ -27,4 +27,7 @@ public class LoginFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
+    public interface LoginInteractionListener {
+        public void login(String userId, String pwd);
+    }
 }
