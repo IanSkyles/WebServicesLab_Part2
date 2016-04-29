@@ -1,5 +1,6 @@
 package iskyles.tacoma.uw.edu.webservicelab.authenticate;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,17 @@ public class SignInActivity extends AppCompatActivity implements LoginFragment.L
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, new LoginFragment() )
                 .commit();
+        mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+        , Context.MODE_PRIVATE);
+        if(!mSharedPreferences.getBoolean(getString(R.string.LOGGEDIN),false)) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container,new LoginFragment())
+                    .commit();
+        } else {
+            Intent i = new Intent(this, CourseActivity.class);
+            startActivity(i);
+            finish();
+        }
     }
 
     @Override
