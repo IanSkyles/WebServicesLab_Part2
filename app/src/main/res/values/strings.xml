@@ -10,5 +10,8 @@
 
     <string name="LOGIN_PREFS">edu.uw.tacoma.iskyles.webservicelab.PREFS</string>
     <string name="LOGGEDIN">loggedin</string>
+    <string name="action_logout">Log out</string>
+
+    <string name="LOGIN_FILE"> edu.uw.tacoma.iskyles.webservicelab.LOGIN_FILE</string>
 
 </resources>
