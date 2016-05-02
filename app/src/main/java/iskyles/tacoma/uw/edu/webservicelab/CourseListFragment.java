@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+
+import iskyles.tacoma.uw.edu.webservicelab.data.CourseDB;
+import iskyles.tacoma.uw.edu.webservicelab.model.Course;
 /*
 import iskyles.tacoma.uw.edu.webservicelab.course.DummyContent;
 import iskyles.tacoma.uw.edu.webservicelab.dummy.DummyContent.DummyItem;
@@ -27,6 +30,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import iskyles.tacoma.uw.edu.webservicelab.data.CourseDB;
 import iskyles.tacoma.uw.edu.webservicelab.model.Course;
 
 /**
@@ -37,15 +41,16 @@ import iskyles.tacoma.uw.edu.webservicelab.model.Course;
  */
 public class CourseListFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private RecyclerView mRecyclerView;
-    private OnListFragmentInteractionListener mListener;
     private static final String COURSE_URL
             = "http://cssgate.insttech.washington.edu/~iskyles/Android/test.php?cmd=courses";
+    private RecyclerView mRecyclerView;
 
+    private CourseDB mCourseDB;
+    private List<Course> mCourseList;
+
+    private OnListFragmentInteractionListener mListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -54,30 +59,21 @@ public class CourseListFragment extends Fragment {
     public CourseListFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static CourseListFragment newInstance(int columnCount) {
-        CourseListFragment fragment = new CourseListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
+        FloatingActionButton floatingActionButton = (FloatingActionButton)
+                getActivity().findViewById(R.id.fab);
+        floatingActionButton.show();
+
+        mCourseDB = new CourseDB(this.getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_courselistfragment_list, container, false);
-
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -104,11 +100,18 @@ public class CourseListFragment extends Fragment {
         }
         else {
             Toast.makeText(view.getContext(),
-                    "No network connection available. Cannot display courses",
+                    "No network connection available. Displaying locally stored data",
                     Toast.LENGTH_SHORT) .show();
 
+            if (mCourseDB == null) {
+                mCourseDB = new CourseDB(getActivity());
+            }
+            if (mCourseList == null) {
+                mCourseList = mCourseDB.getCourses();
+            }
+            mRecyclerView.setAdapter(new MyCourseRecyclerViewAdapter(mCourseList, mListener));
+
         }
-        //Read from file and show the text
 
         try {
             InputStream inputStream = getActivity().openFileInput(
@@ -133,9 +136,9 @@ public class CourseListFragment extends Fragment {
         }
 
 
-
         return view;
     }
+
 
 
 
@@ -157,6 +160,7 @@ public class CourseListFragment extends Fragment {
     }
 
     /**
+     void onListFragmentInteraction(Course item);
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
@@ -167,11 +171,11 @@ public class CourseListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(Course item);
+        public void onListFragmentInteraction(Course item);
     }
 
     private class DownloadCoursesTask extends AsyncTask<String, Void, String> {
+
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -221,11 +225,27 @@ public class CourseListFragment extends Fragment {
 
             // Everything is good, show the list of courses.
             if (!courseList.isEmpty()) {
-                mRecyclerView.setAdapter(new MyCourseListFragmentRecyclerViewAdapter(courseList, mListener));
+                mRecyclerView.setAdapter(new MyCourseRecyclerViewAdapter(courseList, mListener));
+
+                if (mCourseDB == null) {
+                    mCourseDB = new CourseDB(getActivity());
+                }
+
+                // Delete old data so that you can refresh the local
+                // database with the network data.
+                mCourseDB.deleteCourses();
+
+                // Also, add to the local database
+                for (int i=0; i<courseList.size(); i++) {
+                    Course course = courseList.get(i);
+                    mCourseDB.insertCourse(course.getMCourseId(),
+                            course.getMShortDescription(),
+                            course.getMLongDescription(),
+                            course.getMPrereqs());
+                }
+
+
             }
         }
-
     }
-
-
 }
