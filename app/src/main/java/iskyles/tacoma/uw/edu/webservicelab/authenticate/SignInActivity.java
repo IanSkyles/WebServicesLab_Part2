@@ -21,9 +21,11 @@ public class SignInActivity extends AppCompatActivity implements LoginFragment.L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+        /*
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, new LoginFragment() )
                 .commit();
+                */
         mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
         , Context.MODE_PRIVATE);
         if(!mSharedPreferences.getBoolean(getString(R.string.LOGGEDIN),false)) {

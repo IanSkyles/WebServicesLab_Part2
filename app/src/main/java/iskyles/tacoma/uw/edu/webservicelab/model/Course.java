@@ -54,7 +54,14 @@ public class Course implements Serializable{
 
 
     public void setMCourseID(String theNewID) {
-        mCourseId=theNewID;
+        if(theNewID!=null) {
+            if(theNewID.length() <6) {
+                throw new IllegalArgumentException();
+            }
+            mCourseId=theNewID;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
     public String getMCourseId() {
         return mCourseId;
